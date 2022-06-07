@@ -1,8 +1,8 @@
-# NestJS Framework Boilerplate (MongoDB)
+# NestJS PostgreSQL URL Shortener
 
-[![CI/CD](https://github.com/dominicarrojado/nestjs-mongodb-boilerplate/actions/workflows/ci.yml/badge.svg)](https://github.com/dominicarrojado/nestjs-mongodb-boilerplate/actions/workflows/ci.yml)
+[![CI/CD](https://github.com/dominicarrojado/nestjs-mongodb-url-shortener/actions/workflows/ci.yml/badge.svg)](https://github.com/dominicarrojado/nestjs-mongodb-url-shortener/actions/workflows/ci.yml)
 
-A local development setup or boilerplate for [Nest.js framework](https://nestjs.com/) with [MongoDB](https://www.mongodb.com/) and [mongo-express](https://github.com/mongo-express/mongo-express) using [Docker Compose](https://docs.docker.com/compose/).
+A URL shortener server-side app built with [Nest.js](https://nestjs.com/) and [PostgreSQL](https://www.postgresql.org/).
 
 ## Quick Start
 
@@ -12,13 +12,13 @@ A local development setup or boilerplate for [Nest.js framework](https://nestjs.
 4. Clone the app:
 
 ```bash
-git clone git@github.com:dominicarrojado/nestjs-mongodb-boilerplate.git
+git clone git@github.com:dominicarrojado/nestjs-mongodb-url-shortener.git
 ```
 
 5. Install npm packages - _for IDE type checking_.
 
 ```bash
-cd nestjs-mongodb-boilerplate
+cd nestjs-mongodb-url-shortener
 yarn install --frozen-lockfile
 ```
 
@@ -66,4 +66,4 @@ yarn docker-compose:prod
 
 ## Learn
 
-Learn how to build this setup or boilerplate [here](https://dominicarrojado.com/posts/local-development-setup-for-nestjs-projects-with-mongodb/).
+Learn how to build this url shortener app [here](https://dominicarrojado.com/posts/building-a-link-shortener-api-with-nestjs-and-mongodb-with-tests-part-1/).
