@@ -170,4 +170,31 @@ describe('Links', () => {
       linksRepositorySaveMock.mockRestore();
     });
   });
+
+  describe('/links/:id (DELETE)', () => {
+    it('should handle not found', async () => {
+      const linkId = faker.database.mongodbObjectId();
+      const res = await request(app.getHttpServer()).delete(`/links/${linkId}`);
+      const resBody = res.body;
+
+      expect(res.status).toBe(404);
+      expect(resBody.error).toBe('Not Found');
+      expect(resBody.message).toBe(`Link with ID: "${linkId}" not found`);
+    });
+
+    it('should handle delete', async () => {
+      const link = await createLinkItem();
+      const linkId = link.id;
+
+      const res = await request(app.getHttpServer()).delete(`/links/${linkId}`);
+
+      expect(res.status).toBe(200);
+
+      const deletedLink = await linksRepository.findOne({
+        where: { _id: linkId } as Partial<Link>,
+      });
+
+      expect(deletedLink).toBeNull();
+    });
+  });
 });
