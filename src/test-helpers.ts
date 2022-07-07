@@ -1,6 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { DataSource } from 'typeorm';
+import { DataSource, DeleteResult } from 'typeorm';
 import { AppModule } from './app.module';
 
 export async function createNestApplication({
@@ -25,11 +25,11 @@ export async function createNestApplication({
 
 export async function clearRepositories(dbConnection: DataSource) {
   const entities = dbConnection.entityMetadatas;
-  const promises: Array<Promise<void>> = [];
+  const promises: Array<Promise<DeleteResult>> = [];
 
   for (const entity of entities) {
     const repository = dbConnection.getRepository(entity.name);
-    promises.push(repository.clear());
+    promises.push(repository.delete({}));
   }
 
   await Promise.all(promises);
