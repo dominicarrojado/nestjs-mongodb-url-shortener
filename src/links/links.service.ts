@@ -11,4 +11,8 @@ export class LinksService {
   async getAllLinks(): Promise<Array<Link>> {
     return this.linksRepository.find({});
   }
+
+  async createLink(name: string, url: string): Promise<Link> {
+    return this.linksRepository.createLink(name, url);
+  }
 }
