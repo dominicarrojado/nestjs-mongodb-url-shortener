@@ -1,8 +1,8 @@
-# NestJS PostgreSQL URL Shortener
+# NestJS MongoDB URL Shortener
 
 [![CI/CD](https://github.com/dominicarrojado/nestjs-mongodb-url-shortener/actions/workflows/ci.yml/badge.svg)](https://github.com/dominicarrojado/nestjs-mongodb-url-shortener/actions/workflows/ci.yml)
 
-A URL shortener server-side app built with [Nest.js](https://nestjs.com/) and [PostgreSQL](https://www.postgresql.org/).
+A URL shortener server-side app built with [Nest.js](https://nestjs.com/) and [MongoDB](https://www.mongodb.com/).
 
 ## Quick Start
 
