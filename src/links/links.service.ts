@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { CreateLinkDto } from './dto/create-link.dto';
 import { Link } from './link.entity';
 import { LinksRepository } from './links.repository';
 
@@ -12,7 +13,7 @@ export class LinksService {
     return this.linksRepository.find({});
   }
 
-  async createLink(name: string, url: string): Promise<Link> {
-    return this.linksRepository.createLink(name, url);
+  async createLink(createLinkDto: CreateLinkDto): Promise<Link> {
+    return this.linksRepository.createLink(createLinkDto);
   }
 }
