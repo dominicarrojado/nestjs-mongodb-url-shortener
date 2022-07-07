@@ -224,4 +224,66 @@ describe('Links', () => {
       expect(deletedLink).toBeNull();
     });
   });
+
+  describe('/links/:id (PUT)', () => {
+    it('should NOT accept invalid id', async () => {
+      const invalidData = createInvalidLinkIds();
+      const promises: Array<Promise<void>> = [];
+
+      invalidData.forEach((linkId) => {
+        promises.push(
+          (async () => {
+            const res = await request(app.getHttpServer()).put(
+              `/links/${linkId}`,
+            );
+            const resBody = res.body;
+
+            expect(res.status).toBe(400);
+            expect(resBody.error).toBe('Bad Request');
+            expect(resBody.message).toEqual(
+              expect.arrayContaining([expect.any(String)]),
+            );
+          })(),
+        );
+      });
+
+      await Promise.all(promises);
+    });
+
+    it('should NOT accept invalid data', async () => {
+      const linkId = faker.datatype.uuid();
+      const invalidData = createInvalidLinkBodies();
+      const promises: Array<Promise<void>> = [];
+
+      invalidData.forEach((payload) => {
+        promises.push(
+          (async () => {
+            const res = await request(app.getHttpServer())
+              .put(`/links/${linkId}`)
+              .send(payload);
+            const resBody = res.body;
+
+            expect(res.status).toBe(400);
+            expect(resBody.error).toBe('Bad Request');
+            expect(resBody.message).toEqual(
+              expect.arrayContaining([expect.any(String)]),
+            );
+          })(),
+        );
+      });
+
+      await Promise.all(promises);
+    });
+
+    it('should handle not found', async () => {
+      const linkId = faker.database.mongodbObjectId();
+      const linkBody = createLinkBody();
+      const res = await request(app.getHttpServer())
+        .put(`/links/${linkId}`)
+        .send(linkBody);
+
+      expect(res.status).toBe(404);
+      expect(res.body.message).toBe('Not Found');
+    });
+  });
 });
