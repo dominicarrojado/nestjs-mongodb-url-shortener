@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { CreateLinkDto } from './dto/create-link.dto';
 import { Link } from './link.entity';
 import { LinksService } from './links.service';
@@ -15,5 +15,10 @@ export class LinksController {
   @Post()
   createLink(@Body() createLinkDto: CreateLinkDto): Promise<Link> {
     return this.linksService.createLink(createLinkDto);
+  }
+
+  @Delete('/:id')
+  deleteLink(@Param('id') id: string): Promise<void> {
+    return this.linksService.deleteLink(id);
   }
 }

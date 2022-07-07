@@ -21,4 +21,8 @@ export class LinksService {
   async getLink(conditions: FindOneOptions<Link>) {
     return this.linksRepository.findOne(conditions);
   }
+
+  async deleteLink(id: string): Promise<void> {
+    await this.linksRepository.delete(id);
+  }
 }
