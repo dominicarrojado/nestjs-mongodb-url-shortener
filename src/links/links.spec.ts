@@ -48,6 +48,9 @@ describe('Links', () => {
 
     return linksRepository.createLink(linkBody);
   };
+  const createInvalidLinkIds = () => {
+    return [faker.datatype.uuid(), faker.datatype.number(), faker.word.noun()];
+  };
 
   beforeAll(async () => {
     app = await createNestApplication({
@@ -172,6 +175,30 @@ describe('Links', () => {
   });
 
   describe('/links/:id (DELETE)', () => {
+    it('should NOT accept invalid id', async () => {
+      const invalidData = createInvalidLinkIds();
+      const promises: Array<Promise<void>> = [];
+
+      invalidData.forEach((linkId) => {
+        promises.push(
+          (async () => {
+            const res = await request(app.getHttpServer()).delete(
+              `/links/${linkId}`,
+            );
+            const resBody = res.body;
+
+            expect(res.status).toBe(400);
+            expect(resBody.error).toBe('Bad Request');
+            expect(resBody.message).toEqual(
+              expect.arrayContaining([expect.any(String)]),
+            );
+          })(),
+        );
+      });
+
+      await Promise.all(promises);
+    });
+
     it('should handle not found', async () => {
       const linkId = faker.database.mongodbObjectId();
       const res = await request(app.getHttpServer()).delete(`/links/${linkId}`);
