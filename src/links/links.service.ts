@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 import { FindOneOptions } from 'typeorm';
 import { CreateLinkDto } from './dto/create-link.dto';
+import { GetLinkDto } from './dto/get-link.dto';
 import { UpdateLinkDto } from './dto/update-link.dto';
 import { Link } from './link.entity';
 import { LinksRepository } from './links.repository';
@@ -30,7 +31,8 @@ export class LinksService {
     return link;
   }
 
-  async deleteLink(id: string): Promise<void> {
+  async deleteLink(getLinkDto: GetLinkDto): Promise<void> {
+    const { id } = getLinkDto;
     const res = await this.linksRepository.delete(id);
 
     if (res.affected === 0) {
@@ -38,7 +40,11 @@ export class LinksService {
     }
   }
 
-  async updateLink(id: string, updateLinkDto: UpdateLinkDto): Promise<Link> {
+  async updateLink(
+    getLinkDto: GetLinkDto,
+    updateLinkDto: UpdateLinkDto,
+  ): Promise<Link> {
+    const { id } = getLinkDto;
     const link = await this.getLink({
       where: { _id: new ObjectId(id) } as Partial<Link>,
     });
