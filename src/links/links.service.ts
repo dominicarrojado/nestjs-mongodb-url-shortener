@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ObjectId } from 'mongodb';
 import { FindOneOptions } from 'typeorm';
 import { CreateLinkDto } from './dto/create-link.dto';
@@ -21,7 +21,13 @@ export class LinksService {
   }
 
   async getLink(conditions: FindOneOptions<Link>) {
-    return this.linksRepository.findOne(conditions);
+    const link = await this.linksRepository.findOne(conditions);
+
+    if (!link) {
+      throw new NotFoundException();
+    }
+
+    return link;
   }
 
   async deleteLink(id: string): Promise<void> {
