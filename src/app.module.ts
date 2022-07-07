@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
+import { LinksModule } from './links/links.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { configValidationSchema } from './config.schema';
         };
       },
     }),
+    LinksModule,
   ],
   controllers: [],
   providers: [],
