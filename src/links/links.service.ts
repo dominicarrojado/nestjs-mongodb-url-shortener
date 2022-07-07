@@ -31,7 +31,11 @@ export class LinksService {
   }
 
   async deleteLink(id: string): Promise<void> {
-    await this.linksRepository.delete(id);
+    const res = await this.linksRepository.delete(id);
+
+    if (res.affected === 0) {
+      throw new NotFoundException(`Link with ID: "${id}" not found`);
+    }
   }
 
   async updateLink(id: string, updateLinkDto: UpdateLinkDto): Promise<Link> {
