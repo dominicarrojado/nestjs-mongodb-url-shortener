@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import * as request from 'supertest';
+import { ObjectId } from 'mongodb';
 import { faker } from '@faker-js/faker';
 import { clearRepositories, createNestApplication } from '../test-helpers';
 import { LinksRepository } from './links.repository';
@@ -10,11 +11,42 @@ describe('Links', () => {
   let app: INestApplication;
   let dbConnection: DataSource;
   let linksRepository: LinksRepository;
-  const createLinkItem = async () => {
-    return linksRepository.createLink({
+  const createLinkBody = () => {
+    return {
       name: faker.word.noun(),
       url: faker.internet.url(),
-    });
+    };
+  };
+  const createInvalidLinkBodies = () => {
+    const validLink = createLinkBody();
+
+    return [
+      // invalid payload
+      undefined,
+      {},
+
+      // invalid name
+      { name: undefined, url: validLink.url },
+      { name: null, url: validLink.url },
+      { name: faker.datatype.boolean(), url: validLink.url },
+      { name: faker.datatype.number(), url: validLink.url },
+      { name: JSON.parse(faker.datatype.json()), url: validLink.url },
+      { name: '', url: validLink.url },
+
+      // invalid url
+      { name: validLink.name, url: undefined },
+      { name: validLink.name, url: null },
+      { name: validLink.name, url: faker.datatype.boolean() },
+      { name: validLink.name, url: faker.datatype.number() },
+      { name: validLink.name, url: JSON.parse(faker.datatype.json()) },
+      { name: validLink.name, url: '' },
+      { name: validLink.name, url: faker.word.noun() },
+    ];
+  };
+  const createLinkItem = async () => {
+    const linkBody = createLinkBody();
+
+    return linksRepository.createLink(linkBody);
   };
 
   beforeAll(async () => {
@@ -55,6 +87,87 @@ describe('Links', () => {
 
       expect(res.status).toBe(200);
       expect(resBody).toEqual(JSON.parse(JSON.stringify(links)));
+    });
+  });
+
+  describe('/links (POST)', () => {
+    it('should NOT accept invalid data', async () => {
+      const invalidData = createInvalidLinkBodies();
+      const promises: Array<Promise<void>> = [];
+
+      invalidData.forEach((payload) => {
+        promises.push(
+          (async () => {
+            const res = await request(app.getHttpServer())
+              .post('/links')
+              .send(payload);
+            const resBody = res.body;
+
+            expect(res.status).toBe(400);
+            expect(resBody.error).toBe('Bad Request');
+            expect(resBody.message).toEqual(
+              expect.arrayContaining([expect.any(String)]),
+            );
+          })(),
+        );
+      });
+
+      await Promise.all(promises);
+    });
+
+    it('should accept valid data', async () => {
+      const linkBody = createLinkBody();
+
+      const res = await request(app.getHttpServer())
+        .post('/links')
+        .send(linkBody);
+      const resBody = res.body;
+
+      expect(res.status).toBe(201);
+      expect(resBody).toEqual({
+        ...linkBody,
+        id: expect.any(String),
+      });
+
+      const linkId = resBody.id;
+      const link = await linksRepository.findOne({
+        where: { _id: new ObjectId(linkId) } as Partial<Link>,
+      });
+
+      expect(resBody).toEqual(JSON.parse(JSON.stringify(link)));
+    });
+
+    it('should handle already exists', async () => {
+      const existingLink = await createLinkItem();
+      const linkBody = createLinkBody();
+
+      const res = await request(app.getHttpServer()).post('/links').send({
+        name: existingLink.name,
+        url: linkBody.url,
+      });
+      const resBody = res.body;
+
+      expect(res.status).toBe(409);
+      expect(resBody.error).toBe('Conflict');
+      expect(resBody.message).toBe('Short name already exists');
+    });
+
+    it('should handle unexpected error', async () => {
+      const linksRepositorySaveMock = jest
+        .spyOn(linksRepository, 'save')
+        .mockRejectedValue({});
+
+      const linkBody = createLinkBody();
+
+      const res = await request(app.getHttpServer())
+        .post('/links')
+        .send(linkBody);
+      const resBody = res.body;
+
+      expect(res.status).toBe(500);
+      expect(resBody.message).toBe('Internal Server Error');
+
+      linksRepositorySaveMock.mockRestore();
     });
   });
 });
