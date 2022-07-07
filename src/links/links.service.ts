@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { FindOneOptions } from 'typeorm';
 import { CreateLinkDto } from './dto/create-link.dto';
 import { Link } from './link.entity';
 import { LinksRepository } from './links.repository';
@@ -15,5 +16,9 @@ export class LinksService {
 
   async createLink(createLinkDto: CreateLinkDto): Promise<Link> {
     return this.linksRepository.createLink(createLinkDto);
+  }
+
+  async getLink(conditions: FindOneOptions<Link>) {
+    return this.linksRepository.findOne(conditions);
   }
 }

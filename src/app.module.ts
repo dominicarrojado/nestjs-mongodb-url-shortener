@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValidationSchema } from './config.schema';
 import { LinksModule } from './links/links.module';
+import { WildcardModule } from './wildcard/wildcard.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { LinksModule } from './links/links.module';
       },
     }),
     LinksModule,
+    WildcardModule,
   ],
   controllers: [],
   providers: [],
