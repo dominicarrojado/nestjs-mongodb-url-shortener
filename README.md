@@ -1,6 +1,6 @@
 # NestJS MongoDB URL Shortener
 
-[![CI/CD](https://github.com/dominicarrojado/nestjs-mongodb-url-shortener/actions/workflows/ci.yml/badge.svg)](https://github.com/dominicarrojado/nestjs-mongodb-url-shortener/actions/workflows/ci.yml)
+[![CI/CD](https://github.com/dominicarrojado/nestjs-mongodb-url-shortener/actions/workflows/ci.yml/badge.svg)](https://github.com/dominicarrojado/nestjs-mongodb-url-shortener/actions/workflows/ci.yml) [![codecov](https://codecov.io/gh/dominicarrojado/nestjs-mongodb-url-shortener/branch/main/graph/badge.svg?token=39DMXI4NEL)](https://codecov.io/gh/dominicarrojado/nestjs-mongodb-url-shortener)
 
 A URL shortener server-side app built with [Nest.js](https://nestjs.com/) and [MongoDB](https://www.mongodb.com/).
 
