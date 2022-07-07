@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { CreateLinkDto } from './dto/create-link.dto';
 import { Link } from './link.entity';
@@ -16,7 +20,15 @@ export class LinksRepository extends Repository<Link> {
       url,
     });
 
-    await this.save(link);
+    try {
+      await this.save(link);
+    } catch (err) {
+      if (err.code === 11000) {
+        throw new ConflictException('Short name already exists');
+      } else {
+        throw new InternalServerErrorException();
+      }
+    }
 
     return link;
   }
